@@ -1,0 +1,100 @@
+[
+    {
+        "id": "0ad780d57d4db9fe",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1804c8ddeb024db4",
+        "type": "function",
+        "z": "0ad780d57d4db9fe",
+        "name": "set headers to dowload",
+        "func": "msg.headers = {\n    \"content-type\": \"audio/mpeg3;audio/x-mpeg-3;video/mpeg;video/x-mpeg;text/xml\",\n    \"content-disposition\": \"attachment; filename=file.mp3\"\n}\n\nmsg.payload = msg.payload\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 160,
+        "wires": [
+            [
+                "a9bf80df93dda1d0"
+            ]
+        ]
+    },
+    {
+        "id": "f1a90d8022a7ee0f",
+        "type": "http request",
+        "z": "0ad780d57d4db9fe",
+        "name": "",
+        "method": "POST",
+        "ret": "bin",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 510,
+        "y": 160,
+        "wires": [
+            [
+                "1804c8ddeb024db4"
+            ]
+        ]
+    },
+    {
+        "id": "e05102ec7b987d72",
+        "type": "function",
+        "z": "0ad780d57d4db9fe",
+        "name": "request config",
+        "func": "const token = global.get(\"token\");\nmsg.url = `https://api.elevenlabs.io/v1/text-to-speech/${msg.payload.type}`\n    msg.headers = {\n        'accept': 'audio/mpeg',\n        'xi-api-key': token,\n        'Content-Type': 'application/json'\n    }\n\n    msg.payload = {\n        \"text\": msg.payload.text,\n        \"model_id\": \"eleven_multilingual_v1\",\n        \"voice_settings\": {\n            \"stability\": 0.5,\n            \"similarity_boost\": 0.5\n        }\n    }\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "f1a90d8022a7ee0f"
+            ]
+        ]
+    },
+    {
+        "id": "246a708720c79812",
+        "type": "http in",
+        "z": "0ad780d57d4db9fe",
+        "name": "",
+        "url": "/textToSpeech",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "e05102ec7b987d72"
+            ]
+        ]
+    },
+    {
+        "id": "a9bf80df93dda1d0",
+        "type": "http response",
+        "z": "0ad780d57d4db9fe",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 930,
+        "y": 160,
+        "wires": []
+    }
+]
